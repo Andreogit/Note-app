@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:noteapp/pages/auth/login_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:noteapp/cubit/auth/auth_cubit.dart';
+import 'package:noteapp/cubit/notes/notes_cubit.dart';
+import 'package:noteapp/utils/routes.dart';
 
 import '../widgets/app_scaffold.dart';
-import '../widgets/app_text.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -25,16 +29,19 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> checkRoute() async {
-    await Future.delayed(const Duration(seconds: 1), () {
-      Navigator.pushReplacement(
-        context,
-        fadeRouteBuilder(const LoginPage()),
-      );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (FirebaseAuth.instance.currentUser == null) {
+        context.go(Routes.login);
+      } else {
+        context.go(Routes.home);
+      }
     });
   }
 
   @override
   void initState() {
+    context.read<AuthCubit>().init();
+    context.read<NotesCubit>().init();
     checkRoute();
     super.initState();
   }
@@ -49,18 +56,11 @@ class _SplashPageState extends State<SplashPage> {
             SizedBox(
               width: 200,
               child: Image.asset(
-                "assets/note.png",
+                "assets/images/note.png",
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 15),
-            const AppText(
-              "Notes",
-              color: Colors.white,
-              size: 40,
-              fw: FontWeight.w600,
-            ),
-            const SizedBox(height: 70),
+            const SizedBox(height: 100),
           ],
         ),
       ),

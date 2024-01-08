@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:noteapp/utils/colors.dart';
 
 class AppTextField extends StatelessWidget {
+  final TextInputType? keyboardType;
   final TextEditingController? controller;
   final void Function(String str)? onChanged;
   final String? hintText;
@@ -10,6 +11,7 @@ class AppTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final Widget? action;
   final bool? obscure;
+  final Color? textColor;
   const AppTextField({
     super.key,
     this.onChanged,
@@ -19,6 +21,8 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.action,
     this.obscure,
+    this.keyboardType,
+    this.textColor,
   });
 
   @override
@@ -31,6 +35,9 @@ class AppTextField extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: 5, right: action == null ? 0 : 45),
               child: TextField(
+                style: GoogleFonts.lato(color: textColor ?? AppColors.text),
+                cursorColor: AppColors.cursor,
+                keyboardType: keyboardType,
                 obscureText: obscure ?? false,
                 focusNode: focusNode,
                 onTapOutside: (p) {

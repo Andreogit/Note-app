@@ -1,25 +1,25 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:noteapp/widgets/app_scaffold.dart';
+import 'package:noteapp/cubit/auth/auth_cubit.dart';
+import 'package:noteapp/utils/routes.dart';
 
 import '../../utils/colors.dart';
-import '../../utils/routes.dart';
+import '../../widgets/app_scaffold.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/login_form.dart';
 import '../../widgets/logo.dart';
-import '../../cubit/auth/auth_cubit.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
-
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  bool obscurePassword = true;
+bool obscurePassword = true;
+
+class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         AppScaffold(
           body: CustomScrollView(
-            reverse: MediaQuery.of(context).viewInsets.bottom > 200 ? true : false,
+            reverse: MediaQuery.of(context).viewInsets.bottom > 0 ? true : false,
             slivers: [
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     const Logo(),
                     LoginForm(
-                      message: "Hello again  👋",
+                      message: "Register an account",
                       onShowPassword: () {
                         setState(() {
                           obscurePassword = !obscurePassword;
@@ -45,14 +45,16 @@ class _LoginPageState extends State<LoginPage> {
                       context: context,
                       obscurePassword: obscurePassword,
                       onSubmit: () async {
-                        await context.read<AuthCubit>().signInWithEmail();
+                        await context.read<AuthCubit>().register().whenComplete(() {
+                          if (FirebaseAuth.instance.currentUser != null) context.go(Routes.home);
+                        });
                       },
-                      submitText: "Login",
+                      submitText: "Continue",
                       bottomInfo: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AppText(
-                            "Dont have an account",
+                            "Already have an account?",
                             fw: FontWeight.w600,
                             color: AppColors.darkGrey.withOpacity(0.7),
                           ),
@@ -62,12 +64,12 @@ class _LoginPageState extends State<LoginPage> {
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent,
                               onTap: () {
-                                context.go(Routes.register);
+                                context.go(Routes.login);
                               },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                 child: AppText(
-                                  "Sign up",
+                                  "Sign in",
                                   fw: FontWeight.w600,
                                   color: Colors.black,
                                 ),
