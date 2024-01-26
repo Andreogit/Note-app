@@ -23,7 +23,6 @@ class Logo extends StatelessWidget {
               children: [
                 const AppText(
                   "No",
-                  color: Colors.white,
                   size: 60,
                   fw: FontWeight.w600,
                 ),
@@ -36,7 +35,6 @@ class Logo extends StatelessWidget {
                 ),
                 const AppText(
                   "os",
-                  color: Colors.white,
                   size: 60,
                   fw: FontWeight.w600,
                 ),
@@ -46,7 +44,6 @@ class Logo extends StatelessWidget {
           Text(
             "Write your dreams",
             style: GoogleFonts.pacifico(
-              color: Colors.white,
               fontSize: 28,
             ),
           ),

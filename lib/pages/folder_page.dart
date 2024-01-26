@@ -1,22 +1,18 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:noteapp/cubit/folders_bloc/folders_cubit.dart';
-import 'package:noteapp/cubit/notes/notes_cubit.dart';
+import 'package:noteapp/cubit/notes_bloc/notes_cubit.dart';
 import 'package:noteapp/model/folder.dart';
 import 'package:noteapp/model/note.dart';
 import 'package:noteapp/utils/colors.dart';
-import 'package:noteapp/utils/routes.dart';
 import 'package:noteapp/widgets/app_appbar.dart';
 import 'package:noteapp/widgets/app_back_button.dart';
 import 'package:noteapp/widgets/app_popup_menu_button.dart';
 import 'package:noteapp/widgets/app_scaffold.dart';
 import 'package:noteapp/widgets/app_text.dart';
-import 'package:relative_time/relative_time.dart';
+import 'package:noteapp/widgets/note_widget.dart';
 
 class FolderPage extends StatefulWidget {
   final String folderId;
@@ -80,7 +76,10 @@ class _FolderPageState extends State<FolderPage> {
             AppPopupMenuButton(
               items: [
                 PopupMenuItem(
-                  onTap: () => context.read<FoldersCubit>().deleteFolder(widget.folderId),
+                  onTap: () {
+                    context.pop();
+                    context.read<FoldersCubit>().deleteFolder(widget.folderId);
+                  },
                   child: const AppText(
                     "Delete folder",
                   ),
@@ -163,113 +162,6 @@ class _FolderPageState extends State<FolderPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class BuildNote extends StatefulWidget {
-  const BuildNote({
-    super.key,
-    required this.note,
-    required this.animation,
-  });
-
-  final Note note;
-  final Animation<double> animation;
-
-  @override
-  State<BuildNote> createState() => _BuildNoteState();
-}
-
-class _BuildNoteState extends State<BuildNote> {
-  Timer? _everySecond;
-
-  @override
-  void dispose() {
-    _everySecond?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: Tween<double>(
-        begin: 0,
-        end: 1,
-      ).animate(widget.animation),
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, -0.1),
-          end: Offset.zero,
-        ).animate(widget.animation),
-        child: Stack(
-          children: [
-            GestureDetector(
-              onTap: () {
-                if (widget.note.content.isNotEmpty) {
-                  context.push("${Routes.editNote}/${widget.note.uid}");
-                } else {
-                  context.read<NotesCubit>().deleteEmptyNotes();
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black.withOpacity(0.1), width: 1),
-                  color: Colors.white.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText(
-                      widget.note.content.isEmpty ? "New note" : widget.note.content.trim(),
-                      size: 15,
-                      color: Colors.black.withOpacity(0.3),
-                      fw: FontWeight.w600,
-                    ),
-                    const SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        StatefulBuilder(builder: (context, stateSetter) {
-                          if (mounted) {
-                            _everySecond ??= Timer.periodic(const Duration(seconds: 1), (timer) {
-                              if (mounted) {
-                                stateSetter(() {});
-                              }
-                            });
-                          }
-
-                          return AppText(
-                            " ${widget.note.modified.relativeTime(context)}",
-                            color: Colors.black.withOpacity(0.3),
-                          );
-                        }),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            widget.note.pinned
-                ? Positioned(
-                    right: 5,
-                    top: 5,
-                    child: Transform.rotate(
-                      angle: pi / 4,
-                      child: const Icon(
-                        Icons.push_pin,
-                        color: Colors.black,
-                        size: 16,
-                      ),
-                    ),
-                  )
-                : Container(),
-          ],
-        ),
       ),
     );
   }

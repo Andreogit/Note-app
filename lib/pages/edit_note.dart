@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:noteapp/cubit/dashboard/dashboard_cubit.dart';
 import 'package:noteapp/cubit/folders_bloc/folders_cubit.dart';
-import 'package:noteapp/cubit/notes/notes_cubit.dart';
+import 'package:noteapp/cubit/notes_bloc/notes_cubit.dart';
 import 'package:noteapp/model/note.dart';
 import 'package:noteapp/widgets/app_scaffold.dart';
 import 'package:noteapp/widgets/app_text.dart';
@@ -27,7 +28,6 @@ class _EditNoteState extends State<EditNote> {
 
   @override
   void initState() {
-    // path = "${appDirectory.path}/recording.m4a";
     textFieldController.text = context.read<NotesCubit>().state.notes.firstWhere((element) => element.uid == widget.noteId).content;
     textFieldController.selection = TextSelection.fromPosition(TextPosition(offset: textFieldController.text.length));
     super.initState();
@@ -86,9 +86,9 @@ class _EditNoteState extends State<EditNote> {
                               highlightColor: Colors.transparent,
                               splashRadius: 22,
                               splashColor: Colors.transparent,
-                              onPressed: () {
+                              onPressed: () async {
                                 if (!loading) {
-                                  context.read<NotesCubit>().togglePin(widget.noteId);
+                                  await context.read<NotesCubit>().togglePin(widget.noteId);
                                 }
                               },
                               icon: Transform.rotate(
@@ -169,6 +169,7 @@ class _EditNoteState extends State<EditNote> {
                                                   setState(() {
                                                     loading = true;
                                                   });
+                                                  context.read<FoldersCubit>().deleteNoteFromFolders(widget.noteId);
                                                   await context.read<NotesCubit>().deleteNote(widget.noteId);
                                                   if (context.mounted) {
                                                     context.read<FoldersCubit>().updateFolderNotesCount();
@@ -287,9 +288,10 @@ class _EditNoteState extends State<EditNote> {
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: TextField(
                     controller: textFieldController,
-                    onChanged: (value) {
+                    onChanged: (value) async {
                       if (!loading) {
                         context.read<NotesCubit>().changeNoteContent(noteUid: widget.noteId, content: value);
+                        await context.read<DashboardCubit>().updateDashboard();
                       }
                     },
                     maxLines: null,
@@ -300,7 +302,9 @@ class _EditNoteState extends State<EditNote> {
                     onTap: () => FocusScope.of(context).unfocus(),
                     autofocus: true,
                     style: GoogleFonts.roboto(
-                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade800,
+                      fontSize: context.read<NotesCubit>().state.fontSize,
                     ),
                     decoration: const InputDecoration(
                       border: InputBorder.none,

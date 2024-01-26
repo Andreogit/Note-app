@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:noteapp/cubit/auth/auth_cubit.dart';
-import 'package:noteapp/cubit/notes/notes_cubit.dart';
-import 'package:noteapp/utils/routes.dart';
 
 import '../widgets/app_scaffold.dart';
 
@@ -28,21 +25,11 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
-  Future<void> checkRoute() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (FirebaseAuth.instance.currentUser == null) {
-        context.go(Routes.login);
-      } else {
-        context.go(Routes.home);
-      }
-    });
-  }
-
   @override
   void initState() {
-    context.read<AuthCubit>().init();
-    context.read<NotesCubit>().init();
-    checkRoute();
+    Future.delayed(const Duration(seconds: 1), () {
+      context.read<AuthCubit>().init();
+    });
     super.initState();
   }
 
@@ -54,10 +41,19 @@ class _SplashPageState extends State<SplashPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 200,
+              width: 180,
               child: Image.asset(
                 "assets/images/note.png",
                 fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 15),
+            Text(
+              "Note your dreams",
+              style: GoogleFonts.handlee(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
               ),
             ),
             const SizedBox(height: 100),

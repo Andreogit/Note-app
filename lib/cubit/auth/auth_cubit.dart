@@ -3,16 +3,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:noteapp/cubit/auth/auth_repository.dart';
+import 'package:noteapp/main.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:noteapp/utils/get_error_text.dart';
+import 'package:noteapp/utils/routes.dart';
 import 'package:noteapp/utils/toast.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit({required this.repository}) : super(const AuthState());
   final AuthRepository repository;
+
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
 
   Future<void> updateImage() async {
     emit(state.copyWith(loading: true));
@@ -23,11 +31,13 @@ class AuthCubit extends Cubit<AuthState> {
         AppToast.showToast("Profile image updated");
       }
     } on FirebaseAuthException catch (e) {
-      print(e);
       emit(state.copyWith(errorText: getMessageFromErrorCode(e.code)));
       AppToast.showToast(getMessageFromErrorCode(e.code), long: true);
+    } on PlatformException catch (e) {
+      if (e.code == "photo_access_denied") {
+        AppToast.showToast("Photo access denied. Give access in settings", long: true);
+      }
     } catch (e) {
-      print(e);
       emit(state.copyWith(errorText: e.toString()));
       AppToast.showToast(e.toString(), long: true);
     }
@@ -36,19 +46,26 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> init() async {
-    final snapshot = await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).get();
-    final data = snapshot.data();
-    if (data == null || data.isEmpty) {
-      await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).set({
-        "email": FirebaseAuth.instance.currentUser?.email,
-      });
-    }
-    emit(
-      state.copyWith(
-        email: FirebaseAuth.instance.currentUser?.email,
-        avatarUrl: data?["avatarUrl"] ?? FirebaseAuth.instance.currentUser?.photoURL ?? "",
-      ),
-    );
+    FirebaseAuth.instance.authStateChanges().listen((user) async {
+      if (user != null) {
+        navigatorKey.currentContext?.replace(Routes.home);
+        final snapshot = await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).get();
+        final data = snapshot.data();
+        if (data == null || data.isEmpty) {
+          await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid).set({
+            "email": FirebaseAuth.instance.currentUser?.email,
+          });
+        }
+        emit(
+          state.copyWith(
+            email: FirebaseAuth.instance.currentUser?.email,
+            avatarUrl: data?["avatarUrl"] ?? FirebaseAuth.instance.currentUser?.photoURL ?? "",
+          ),
+        );
+      } else {
+        navigatorKey.currentContext?.replace(Routes.starter);
+      }
+    });
   }
 
   void changePassword(str) {
@@ -112,10 +129,8 @@ class AuthCubit extends Cubit<AuthState> {
         try {
           await FirebaseAuth.instance.signInWithCredential(credential);
         } on FirebaseAuthException catch (e) {
-          print(e);
           emit(state.copyWith(errorText: getMessageFromErrorCode(e.code)));
         } catch (e) {
-          print(e);
           emit(state.copyWith(errorText: e.toString()));
         }
       }

@@ -5,4 +5,6 @@ class Routes {
   static String home = "/home";
   static String editNote = "/editNote";
   static String folder = "/folder";
+  static String starter = "/starter";
+  static String settings = "/settings";
 }

@@ -5,6 +5,10 @@ class FoldersRepository {
   final foldersCollection = FirebaseFirestore.instance.collection("folders");
 
   Future<void> deleteFolder(String folderUid) async {
-    await db.collection("folders").doc(folderUid).delete();
+    try {
+      await db.collection("folders").doc(folderUid).delete();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

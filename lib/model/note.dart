@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-class Note {
+class Note extends Equatable {
   final String title;
   final String content;
   final DateTime created;
@@ -13,9 +13,9 @@ class Note {
   final String creatorUid;
   final List<String> undos;
   final List<String> redos;
-  final List<String> audioPaths;
+  final bool updated;
 
-  Note({
+  const Note({
     required this.title,
     required this.content,
     required this.created,
@@ -25,7 +25,7 @@ class Note {
     required this.creatorUid,
     this.undos = const [],
     this.redos = const [],
-    this.audioPaths = const [],
+    this.updated = false,
   });
 
   factory Note.empty() {
@@ -40,7 +40,6 @@ class Note {
       uid: doc.id,
       creatorUid: data?['creatorUid'] ?? "",
       pinned: data?['pinned'] ?? false,
-      audioPaths: data?['audioPaths']?.cast<String>() ?? [],
       created: DateTime.fromMillisecondsSinceEpoch(data?['created'] ?? 0),
       modified: DateTime.fromMillisecondsSinceEpoch(data?['modified'] ?? 0),
     );
@@ -56,7 +55,7 @@ class Note {
     String? creatorUid,
     List<String>? undos,
     List<String>? redos,
-    List<String>? audioPaths,
+    bool? updated,
   }) {
     return Note(
       title: title ?? this.title,
@@ -68,7 +67,7 @@ class Note {
       creatorUid: creatorUid ?? this.creatorUid,
       undos: undos ?? this.undos,
       redos: redos ?? this.redos,
-      audioPaths: audioPaths ?? this.audioPaths,
+      updated: updated ?? this.updated,
     );
   }
 
@@ -81,9 +80,6 @@ class Note {
       'uid': uid,
       'pinned': pinned,
       'creatorUid': creatorUid,
-      'undos': undos,
-      'redos': redos,
-      'audioPaths': audioPaths,
     };
   }
 
@@ -96,44 +92,25 @@ class Note {
       uid: map['uid'] ?? "",
       pinned: map['pinned'] ?? false,
       creatorUid: map['creatorUid'] ?? "",
-      undos: List<String>.from((map['undos'] ?? [])),
-      redos: List<String>.from((map['redos'] ?? [])),
-      audioPaths: List<String>.from((map['audioPaths'] ?? [])),
     );
   }
 
   @override
   String toString() {
-    return 'Note(title: $title, content: $content, created: $created, modified: $modified, uid: $uid, pinned: $pinned, creatorUid: $creatorUid, undos: $undos, redos: $redos, audioPaths: $audioPaths)';
+    return 'Note(title: $title, content: $content, created: $created, modified: $modified, uid: $uid, pinned: $pinned, creatorUid: $creatorUid, undos: $undos, redos: $redos, updated: $updated)';
   }
 
   @override
-  bool operator ==(covariant Note other) {
-    if (identical(this, other)) return true;
-
-    return other.title == title &&
-        other.content == content &&
-        other.created == created &&
-        other.modified == modified &&
-        other.uid == uid &&
-        other.pinned == pinned &&
-        other.creatorUid == creatorUid &&
-        listEquals(other.undos, undos) &&
-        listEquals(other.redos, redos) &&
-        listEquals(other.audioPaths, audioPaths);
-  }
-
-  @override
-  int get hashCode {
-    return title.hashCode ^
-        content.hashCode ^
-        created.hashCode ^
-        modified.hashCode ^
-        uid.hashCode ^
-        pinned.hashCode ^
-        creatorUid.hashCode ^
-        undos.hashCode ^
-        redos.hashCode ^
-        audioPaths.hashCode;
-  }
+  List<Object?> get props => [
+        title,
+        content,
+        created,
+        modified,
+        uid,
+        pinned,
+        creatorUid,
+        undos,
+        redos,
+        updated,
+      ];
 }
