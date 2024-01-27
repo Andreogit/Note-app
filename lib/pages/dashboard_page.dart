@@ -13,6 +13,7 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      bgColor: ThemeData().scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.only(top: 12.0),
         child: Column(

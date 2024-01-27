@@ -331,11 +331,11 @@ class _EditNoteState extends State<EditNote> {
                   alignment: Alignment.center,
                   children: [
                     CircularProgressIndicator(
-                      color: Color.fromARGB(255, 87, 157, 255),
+                      color: Color(0xFF579DFF),
                       strokeWidth: 3,
                       value: 1,
                     ),
-                    CircularProgressIndicator(color: Color.fromARGB(255, 194, 217, 255), strokeWidth: 3),
+                    CircularProgressIndicator(color: Color(0xFFC2D9FF), strokeWidth: 3),
                   ],
                 ),
               )

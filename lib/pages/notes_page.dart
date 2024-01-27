@@ -178,8 +178,7 @@ class _BuildNotesPageState extends State<BuildNotesPage> {
                   child: Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 109, 106).withOpacity(candidateData.isNotEmpty ? 1 : 0.7),
-                        shape: BoxShape.circle),
+                        color: const Color(0xFFFF6D6A).withOpacity(candidateData.isNotEmpty ? 1 : 0.7), shape: BoxShape.circle),
                     child: const Icon(
                       Icons.delete_outline_outlined,
                       size: 40,

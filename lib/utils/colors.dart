@@ -10,4 +10,6 @@ class AppColors {
   static const Color text = Color.fromARGB(255, 18, 20, 33);
   static const Color loginButton = Color.fromARGB(255, 142, 243, 147);
   static const Color registerButton = Color.fromARGB(255, 99, 205, 255);
+  static const Color pageIndicatorInactive = Color(0xFFAAADE0);
+  static const Color appBar = Color(0xFF9DCFFF);
 }

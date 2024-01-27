@@ -38,7 +38,7 @@ class _FolderPageState extends State<FolderPage> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: AppAppbar(
-        title: Row(
+        content: Row(
           children: [
             const SizedBox(width: 5),
             const AppBackButton(),

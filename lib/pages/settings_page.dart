@@ -14,8 +14,9 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: const AppAppbar(
-        title: AppText(
+        content: AppText(
           "Settings",
+          size: 20,
           fw: FontWeight.w500,
         ),
         leading: AppBackButton(),

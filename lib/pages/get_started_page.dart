@@ -28,7 +28,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 248, 248, 238),
+      backgroundColor: const Color(0xFFF8F8EE),
       appBar: GetStartedAppBar(
         pageIndex: pageIndex,
         controller: controller,
@@ -226,7 +226,7 @@ class WelcomeScreen extends StatelessWidget {
                 Image.asset(
                   "assets/images/welcome.png",
                   colorBlendMode: BlendMode.darken,
-                  color: const Color.fromARGB(255, 248, 248, 237),
+                  color: const Color(0xFFF8F8ED),
                 ),
               ],
             ),
@@ -359,7 +359,7 @@ class GetStartedAppBar extends StatelessWidget implements PreferredSizeWidget {
                       "1",
                       style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.w600,
-                          color: pageIndex.pageIndex == 0 ? Colors.black : const Color.fromARGB(255, 170, 173, 224),
+                          color: pageIndex.pageIndex == 0 ? Colors.black : AppColors.pageIndicatorInactive,
                           fontSize: 16),
                     ),
                   ),
@@ -375,7 +375,7 @@ class GetStartedAppBar extends StatelessWidget implements PreferredSizeWidget {
                       "2",
                       style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.w600,
-                          color: pageIndex.pageIndex == 1 ? Colors.black : const Color.fromARGB(255, 170, 173, 224),
+                          color: pageIndex.pageIndex == 1 ? Colors.black : AppColors.pageIndicatorInactive,
                           fontSize: 16),
                     ),
                   ),
@@ -391,7 +391,7 @@ class GetStartedAppBar extends StatelessWidget implements PreferredSizeWidget {
                       "3",
                       style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.w600,
-                          color: pageIndex.pageIndex == 2 ? Colors.black : const Color.fromARGB(255, 170, 173, 224),
+                          color: pageIndex.pageIndex == 2 ? Colors.black : AppColors.pageIndicatorInactive,
                           fontSize: 16),
                     ),
                   ),

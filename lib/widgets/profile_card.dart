@@ -23,7 +23,7 @@ class ProfileCard extends StatelessWidget {
                 children: [
                   Icon(
                     icon,
-                    color: Colors.grey.shade600,
+                    color: const Color(0xFF4196E4),
                   ),
                   const SizedBox(width: 10),
                   AppText(

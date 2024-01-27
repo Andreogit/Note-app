@@ -18,7 +18,7 @@ import 'package:noteapp/cubit/notes_bloc/notes_repository.dart';
 import 'package:noteapp/cubit/page_cubit.dart';
 import 'package:noteapp/pages/auth/login_page.dart';
 import 'package:noteapp/pages/auth/register_page.dart';
-import 'package:noteapp/pages/edit_note.dart';
+import 'package:noteapp/pages/edit_note_page.dart';
 import 'package:noteapp/pages/folder_page.dart';
 import 'package:noteapp/pages/home_page.dart';
 import 'package:noteapp/pages/settings_page.dart';
@@ -115,7 +115,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => DashboardCubit(repository: DashboardRepository())),
       ],
       child: MaterialApp.router(
-        theme: ThemeData(scaffoldBackgroundColor: Colors.white),
         builder: (context, child) {
           notesCubit = BlocProvider.of<NotesCubit>(context);
           dashboardCubit = BlocProvider.of<DashboardCubit>(context);

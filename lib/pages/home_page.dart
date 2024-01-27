@@ -56,8 +56,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavBar(pageController: pageController),
       scaffoldKey: _scaffoldKey,
       appBar: AppAppbar(
-        backgroundColor: Colors.transparent,
-        title: Row(
+        backgroundColor: context.watch<PageCubit>().state == 3 ? ThemeData().scaffoldBackgroundColor : null,
+        content: Row(
           children: [
             const SizedBox(width: 20),
             BlocBuilder<PageCubit, int>(
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                         strokeWidth: 2.5,
                         dashPattern: const [34.45, 3, 44, 3, 45.7, 3],
                         borderType: BorderType.Circle,
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.white.withOpacity(0.8),
                         padding: const EdgeInsets.all(3),
                         child: BlocBuilder<AuthCubit, AuthState>(
                           buildWhen: (previous, current) => previous.avatarUrl != current.avatarUrl,
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                             return state.avatarUrl == ""
                                 ? const CircleAvatar(
                                     radius: 20,
-                                    backgroundColor: Colors.grey,
+                                    backgroundColor: Colors.blueAccent,
                                     child: Icon(
                                       Icons.person,
                                       color: Colors.white,
